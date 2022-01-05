@@ -36,15 +36,17 @@ namespace Steamworks
 		/// - You might have closed the connection, so fetching the user data
 		///   would not be possible.
 		///
-		/// Not used when sending messages,
+		/// Not used when sending messages.
 		public long m_nConnUserData;
 
 		/// Local timestamp when the message was received
 		/// Not used for outbound messages.
 		public SteamNetworkingMicroseconds m_usecTimeReceived;
 
-		/// Message number assigned by the sender.
-		/// This is not used for outbound messages
+		/// Message number assigned by the sender.  This is not used for outbound
+		/// messages.  Note that if multiple lanes are used, each lane has its own
+		/// message numbers, which are assigned sequentially, so messages from
+		/// different lanes will share the same numbers.
 		public long m_nMessageNumber;
 
 		/// Function used to free up m_pData.  This mechanism exists so that
@@ -53,7 +55,7 @@ namespace Steamworks
 		/// usually be something like:
 		///
 		/// free( pMsg->m_pData );
-		internal IntPtr m_pfnFreeData;
+		public IntPtr m_pfnFreeData;
 
 		/// Function to used to decrement the internal reference count and, if
 		/// it's zero, release the message.  You should not set this function pointer,
@@ -76,10 +78,29 @@ namespace Steamworks
 		/// Not used for received messages.
 		public long m_nUserData;
 
+		/// For outbound messages, which lane to use?  See ISteamNetworkingSockets::ConfigureConnectionLanes.
+		/// For inbound messages, what lane was the message received on?
+		public ushort m_idxLane;
+
+		public ushort _pad1__;
+
 		/// You MUST call this when you're done with the object,
 		/// to free up memory, etc.
 		public void Release() {
-			NativeMethods.SteamAPI_SteamNetworkingMessage_t_Release(m_pfnRelease);
+			throw new System.NotImplementedException("Please use the static Release function instead which takes an IntPtr.");
+		}
+
+		/// You MUST call this when you're done with the object,
+		/// to free up memory, etc.
+		/// This is a Steamworks.NET extension.
+		public static void Release(IntPtr pointer) {
+			NativeMethods.SteamAPI_SteamNetworkingMessage_t_Release(pointer);
+		}
+
+		/// Convert an IntPtr received from ISteamNetworkingSockets.ReceiveMessagesOnPollGroup into our structure.
+		/// This is a Steamworks.NET extension.
+		public static SteamNetworkingMessage_t FromIntPtr(IntPtr pointer) {
+			return (SteamNetworkingMessage_t)Marshal.PtrToStructure(pointer, typeof(SteamNetworkingMessage_t));
 		}
 	}
 }
