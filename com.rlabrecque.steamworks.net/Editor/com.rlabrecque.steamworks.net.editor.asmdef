@@ -12,7 +12,9 @@
     "overrideReferences": true,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "STEAMWORKS_ENABLED"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }
