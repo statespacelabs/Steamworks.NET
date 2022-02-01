@@ -38,9 +38,9 @@ namespace Steamworks {
 			// Steamworks.NET specific: We initialize the SteamAPI Context like this for now, but we need to do it
 			// every time that Unity reloads binaries, so we also check if the pointers are available and initialized
 			// before each call to any interface functions. That is in InteropHelp.cs
-			if (reason == FailureReason.None) {
-				reason |= CSteamAPIContext.Init();
-			}
+			// if (reason == FailureReason.None) {
+			// 	reason |= CSteamAPIContext.Init();
+			// }
 
 			if (reason == FailureReason.None) {
 				CallbackDispatcher.Initialize();
