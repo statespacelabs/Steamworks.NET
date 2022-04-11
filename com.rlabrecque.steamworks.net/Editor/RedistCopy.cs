@@ -13,23 +13,17 @@ using UnityEditor.Callbacks;
 using System.IO;
 using Steamworks;
 
-public class RedistCopy {
+public class RedistCopy
+{
 	[PostProcessBuild]
-	public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject) {
+	public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
+	{
 		string baseDir;
 
-		switch(target)
+		switch (target)
 		{
 			case BuildTarget.StandaloneWindows:
-			{
-				baseDir = Path.Combine(Path.GetDirectoryName(pathToBuiltProject), Path.GetFileNameWithoutExtension(pathToBuiltProject) + "_Data");
-				break;
-			}
 			case BuildTarget.StandaloneWindows64:
-			{
-				baseDir = Path.Combine(Path.GetDirectoryName(pathToBuiltProject), Path.GetFileNameWithoutExtension(pathToBuiltProject) + "_Data");
-				break;
-			}
 			case BuildTarget.StandaloneLinux64:
 			{
 				baseDir = Path.Combine(Path.GetDirectoryName(pathToBuiltProject), Path.GetFileNameWithoutExtension(pathToBuiltProject) + "_Data");
@@ -51,7 +45,8 @@ public class RedistCopy {
 		// Create if it doesn't exist yet
 		Directory.CreateDirectory(pluginsDir);
 
-		string[] DebugInfo = {
+		string[] DebugInfo =
+		{
 			"Steamworks.NET created by Riley Labrecque",
 			"http://steamworks.github.io",
 			"",
@@ -63,6 +58,9 @@ public class RedistCopy {
 			""
 		};
 		File.WriteAllLines(Path.Combine(pluginsDir, "Steamworks.NET.txt"), DebugInfo);
+		
+		var file = new FileInfo(pathToBuiltProject);
+		RedistInstall.WriteSteamAppIdTxtFile(file.Directory.FullName);
 	}
 }
 
