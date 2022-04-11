@@ -58,9 +58,6 @@ public class RedistCopy
 			""
 		};
 		File.WriteAllLines(Path.Combine(pluginsDir, "Steamworks.NET.txt"), DebugInfo);
-		
-		var file = new FileInfo(pathToBuiltProject);
-		RedistInstall.WriteSteamAppIdTxtFile(file.Directory.FullName);
 	}
 }
 
