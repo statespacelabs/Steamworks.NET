@@ -321,6 +321,7 @@ namespace Steamworks {
 			if (m_pSteamClient == IntPtr.Zero)
 			{
 				failureReason |= FailureReason.m_pSteamClient;
+				return failureReason;
 			}
 
 			m_pSteamUser = SteamClient.GetISteamUser(hSteamUser, hSteamPipe, Constants.STEAMUSER_INTERFACE_VERSION);
