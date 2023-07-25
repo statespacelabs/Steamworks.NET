@@ -62,6 +62,7 @@ g_SkippedStructs = (
 
     # CustomType
     "SteamIPAddress_t",
+    "SteamInputActionEvent_t",
 )
 
 g_SequentialStructs = (
@@ -86,10 +87,6 @@ g_SpecialFieldTypes = {
         "bState":  "byte", # Originally bool
         "bActive": "byte", # Originally bool
     },
-
-    "SteamDatagramGameCoordinatorServerLogin": {
-        "m_appData": "byte", # Originally char
-    },
 }
 
 g_ExplicitStructs = {
@@ -102,7 +99,7 @@ g_ExplicitStructs = {
 
 def main(parser):
     try:
-        os.makedirs("autogen/")
+        os.makedirs("../com.rlabrecque.steamworks.net/Runtime/autogen/")
     except OSError:
         pass
 
@@ -114,7 +111,7 @@ def main(parser):
         for callback in f.callbacks:
             callbacklines.extend(parse(callback))
 
-    with open("autogen/SteamStructs.cs", "wb") as out:
+    with open("../com.rlabrecque.steamworks.net/Runtime/autogen/SteamStructs.cs", "wb") as out:
         with open("templates/header.txt", "r") as f:
             out.write(bytes(f.read(), "utf-8"))
         out.write(bytes("namespace Steamworks {\n", "utf-8"))
@@ -123,7 +120,7 @@ def main(parser):
         out.write(bytes("}\n\n", "utf-8"))
         out.write(bytes("#endif // !DISABLESTEAMWORKS\n", "utf-8"))
 
-    with open("autogen/SteamCallbacks.cs", "wb") as out:
+    with open("../com.rlabrecque.steamworks.net/Runtime/autogen/SteamCallbacks.cs", "wb") as out:
         with open("templates/header.txt", "r") as f:
             out.write(bytes(f.read(), "utf-8"))
         out.write(bytes("namespace Steamworks {\n", "utf-8"))

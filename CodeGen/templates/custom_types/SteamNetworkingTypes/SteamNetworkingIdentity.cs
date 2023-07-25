@@ -26,6 +26,7 @@ namespace Steamworks
 		// Max sizes
 		public const int k_cchMaxString = 128; // Max length of the buffer needed to hold any identity, formatted in string format by ToString
 		public const int k_cchMaxGenericString = 32; // Max length of the string for generic string identities.  Including terminating '\0'
+		public const int k_cchMaxXboxPairwiseID = 33; // Including terminating '\0'
 		public const int k_cbMaxGenericBytes = 32;
 
 		//
@@ -60,6 +61,42 @@ namespace Steamworks
 			return NativeMethods.SteamAPI_SteamNetworkingIdentity_GetSteamID64(ref this);
 		}
 
+		// Returns false if invalid length
+		public bool SetXboxPairwiseID(string pszString)
+		{
+			using (var pszString2 = new InteropHelp.UTF8StringHandle(pszString)) {
+				return NativeMethods.SteamAPI_SteamNetworkingIdentity_SetXboxPairwiseID(ref this, pszString2);
+			}
+		}
+
+		// Returns nullptr if not Xbox ID
+		public string GetXboxPairwiseID()
+		{
+			return InteropHelp.PtrToStringUTF8(NativeMethods.SteamAPI_SteamNetworkingIdentity_GetXboxPairwiseID(ref this));
+		}
+
+		public void SetPSNID(ulong id)
+		{
+			NativeMethods.SteamAPI_SteamNetworkingIdentity_SetPSNID(ref this, id);
+		}
+
+		// Returns 0 if not PSN
+		public ulong GetPSNID()
+		{
+			return NativeMethods.SteamAPI_SteamNetworkingIdentity_GetPSNID(ref this);
+		}
+
+		public void SetStadiaID(ulong id)
+		{
+			NativeMethods.SteamAPI_SteamNetworkingIdentity_SetStadiaID(ref this, id);
+		}
+
+		// Returns 0 if not Stadia
+		public ulong GetStadiaID()
+		{
+			return NativeMethods.SteamAPI_SteamNetworkingIdentity_GetStadiaID(ref this);
+		}
+
 		// Set to specified IP:port
 		public void SetIPAddr(SteamNetworkingIPAddr addr) {
 			NativeMethods.SteamAPI_SteamNetworkingIdentity_SetIPAddr(ref this, ref addr);
@@ -68,7 +105,26 @@ namespace Steamworks
 		// returns null if we are not an IP address.
 		public SteamNetworkingIPAddr GetIPAddr(){
 			throw new System.NotImplementedException();
+			// TODO: Should SteamNetworkingIPAddr be a class?
+			//       or should this return some kind of pointer instead?
 			//return NativeMethods.SteamAPI_SteamNetworkingIdentity_GetIPAddr(ref this);
+		}
+
+		public void SetIPv4Addr(uint nIPv4, ushort nPort) {
+			NativeMethods.SteamAPI_SteamNetworkingIdentity_SetIPv4Addr(ref this, nIPv4, nPort);
+		}
+
+		// returns 0 if we are not an IPv4 address.
+		public uint GetIPv4() {
+			return NativeMethods.SteamAPI_SteamNetworkingIdentity_GetIPv4(ref this);
+		}
+
+		public ESteamNetworkingFakeIPType GetFakeIPType() {
+			return NativeMethods.SteamAPI_SteamNetworkingIdentity_GetFakeIPType(ref this);
+		}
+
+		public bool IsFakeIP() {
+			return GetFakeIPType() > ESteamNetworkingFakeIPType.k_ESteamNetworkingFakeIPType_NotFake;
 		}
 
 		// "localhost" is equivalent for many purposes to "anonymous."  Our remote
@@ -119,7 +175,7 @@ namespace Steamworks
 		/// See also SteamNetworkingIPAddrRender
 		public void ToString(out string buf) {
 			IntPtr buf2 = Marshal.AllocHGlobal(k_cchMaxString);
-			NativeMethods.SteamNetworkingIdentity_ToString(ref this, buf2, k_cchMaxString);
+			NativeMethods.SteamAPI_SteamNetworkingIdentity_ToString(ref this, buf2, k_cchMaxString);
 			buf = InteropHelp.PtrToStringUTF8(buf2);
 			Marshal.FreeHGlobal(buf2);
 		}
@@ -131,7 +187,7 @@ namespace Steamworks
 		/// looks invalid.
 		public bool ParseString(string pszStr) {
 			using (var pszStr2 = new InteropHelp.UTF8StringHandle(pszStr)) {
-				return NativeMethods.SteamNetworkingIdentity_ParseString(ref this, pszStr2);
+				return NativeMethods.SteamAPI_SteamNetworkingIdentity_ParseString(ref this, pszStr2);
 			}
 		}
 	}

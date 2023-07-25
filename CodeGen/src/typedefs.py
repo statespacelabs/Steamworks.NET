@@ -1,7 +1,5 @@
 import os
 import sys
-import errno
-import shutil
 from collections import OrderedDict
 from SteamworksParser import steamworksparser
 
@@ -25,25 +23,13 @@ g_TypeDict = {
 }
 
 g_UnusedTypedefs = [
-    # SteamClientPublic
-    "BREAKPAD_HANDLE",
-
     # SteamTypes
-    "AssetClassId_t",
-    "BundleId_t",
-    "CellID_t",
-    "GID_t",
     "int8",
     "int16",
     "int32",
     "int64",
     "intp",
-    "JobID_t",
     "lint64",
-    "PackageId_t",
-    "PartnerId_t",
-    "PhysicalItemId_t",
-    "TxnID_t",
     "uint8",
     "uint16",
     "uint32",
@@ -117,10 +103,6 @@ g_ReadOnlyValues = {
         ("Invalid", "0x0"),
     ]),
 
-    "ManifestId_t": OrderedDict([
-        ("Invalid", "0x0"),
-    ]),
-
     "SteamAPICall_t": OrderedDict([
         ("Invalid", "0x0"),
     ]),
@@ -164,20 +146,15 @@ g_ReadOnlyValues = {
 
 
 def main(parser):
-    try:
-        shutil.rmtree("types/")
-    except FileNotFoundError:
-        pass
-
     with open("templates/header.txt", "r") as f:
         HEADER = f.read()
 
     with open("templates/typetemplate.txt", "r") as f:
         template = f.read()
 
-    for root, directories, filenames in os.walk('CustomTypes/'):
+    for root, directories, filenames in os.walk('templates/custom_types/'):
         for filename in filenames:
-            outputdir = "types/" + root[len('CustomTypes/'):]
+            outputdir = "../com.rlabrecque.steamworks.net/Runtime/types/" + root[len('templates/custom_types/'):]
             try:
                 os.makedirs(outputdir)
             except OSError:
@@ -220,11 +197,11 @@ def main(parser):
         foldername = g_PrettyFilenames.get(foldername, foldername)
 
         try:
-            os.makedirs("types/" + foldername)
+            os.makedirs("../com.rlabrecque.steamworks.net/Runtime/types/" + foldername)
         except OSError:
             pass
 
-        with open("types/" + foldername + "/" + t.name + ".cs", "wb") as out:
+        with open("../com.rlabrecque.steamworks.net/Runtime/types/" + foldername + "/" + t.name + ".cs", "wb") as out:
             out.write(bytes(HEADER, "utf-8"))
             out.write(bytes(ourtemplate, "utf-8"))
 
