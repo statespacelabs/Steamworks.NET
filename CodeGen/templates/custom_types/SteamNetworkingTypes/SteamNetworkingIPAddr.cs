@@ -64,7 +64,7 @@ namespace Steamworks
 		/// See also SteamNetworkingIdentityRender
 		public void ToString(out string buf, bool bWithPort) {
 			IntPtr buf2 = Marshal.AllocHGlobal(k_cchMaxString);
-			NativeMethods.SteamNetworkingIPAddr_ToString(ref this, buf2, k_cchMaxString, bWithPort);
+			NativeMethods.SteamAPI_SteamNetworkingIPAddr_ToString(ref this, buf2, k_cchMaxString, bWithPort);
 			buf = InteropHelp.PtrToStringUTF8(buf2);
 			Marshal.FreeHGlobal(buf2);
 		}
@@ -73,13 +73,24 @@ namespace Steamworks
 		/// (This means that you cannot tell if a zero port was explicitly specified.)
 		public bool ParseString(string pszStr) {
 			using (var pszStr2 = new InteropHelp.UTF8StringHandle(pszStr)) {
-				return NativeMethods.SteamNetworkingIPAddr_ParseString(ref this, pszStr2);
+				return NativeMethods.SteamAPI_SteamNetworkingIPAddr_ParseString(ref this, pszStr2);
 			}
 		}
 
 		/// See if two addresses are identical
 		public bool Equals(SteamNetworkingIPAddr x) {
 			return NativeMethods.SteamAPI_SteamNetworkingIPAddr_IsEqualTo(ref this, ref x);
+		}
+
+		/// Classify address as FakeIP.  This function never returns
+		/// k_ESteamNetworkingFakeIPType_Invalid.
+		public ESteamNetworkingFakeIPType GetFakeIPType() {
+			return NativeMethods.SteamAPI_SteamNetworkingIPAddr_GetFakeIPType(ref this);
+		}
+
+		/// Return true if we are a FakeIP
+		public bool IsFakeIP() {
+			return GetFakeIPType() > ESteamNetworkingFakeIPType.k_ESteamNetworkingFakeIPType_NotFake;
 		}
 	}
 }
